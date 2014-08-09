@@ -1,30 +1,54 @@
 from subprocess import Popen, PIPE
-import sys
+import sys, glob, os
 
-envname = sys.argv[-1]
+#Initial parsing of arguments
+envName = sys.argv[-1]
+paths = []
+if len(sys.argv)==2:
+	paths = ["./"]
+else:
+	for path in sys.argv[1:-1]:
+		paths.append(str(path))
 
-# try: 
+def parse(paths):
+	"""Parses the paths list and places each into the proper format
+	"""
+	for path in paths:
+		
+
+
+parse(paths)
+
+#Scan each directory for py files
+for path in paths:
+	if os.path.isdir(path):
+		# Might be dangerous...
+		paths.append()
+	else:
+		print list(glob.glob('*.py'))
+
+
 #Determine if the virtualenv has been created before
 createNew = True
 p = Popen("source $(which virtualenvwrapper.sh) && lsvirtualenv", shell=True, stdout=PIPE)
 for env in str(p.stdout.read()).split('\n'):
-	if env == str(envname):
+	if env == str(envName):
 		createNew = False
 		break
 	else:
 		pass
 
-#create a new virtual environment if it has not been created before
+#create a new virtual environment
 if createNew:
 	print "Creating new virtual environment"
-	p = Popen("source $(which virtualenvwrapper.sh) && mkvirtualenv "+str(envname), shell=True, stdout=PIPE)
+	p = Popen("source $(which virtualenvwrapper.sh) && mkvirtualenv "+str(envName), shell=True, stdout=PIPE)
 	print str(p.stdout.read())
-	for package in sys.argv[1:-1]:
-		p = Popen("source $(which virtualenvwrapper.sh) && workon "+str(envname)+"; pip install "+str(package), shell = True, stdout = PIPE)
-		print p.stdout.read()
+	#scan each directory
 
-# except Exception, e:
-# 	raise e
+
+
+		# p = Popen("source $(which virtualenvwrapper.sh) && workon "+str(envName)+"; pip install "+str(package), shell = True, stdout = PIPE)
+
 
 
 
